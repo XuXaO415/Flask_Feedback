@@ -5,6 +5,7 @@ from forms import RegisterForm, LoginForm
 
 
 
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///feedback_db'
@@ -19,7 +20,7 @@ connect_db(app)
 
 
 @app.route("/")
-def redirect():
+def homepage():
     """Redirects to register page"""
     
     return redirect("/register")
@@ -31,17 +32,23 @@ def register():
     
     form = RegisterForm()
     
-    if form.vlaidate_on_submit():
+    if form.validate_on_submit():
         username = form.username.data 
         password = form.password.data 
         email = form.email.data 
         first_name =form.first_name.data 
         last_name = form.last_name.data 
         
+        user = User(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+        db.session.add(user)
+        db.session.commit()
         
-        
+        #On successful login, redirect to secret page
+        return redirect("/secret")
     
-    return redirect("/secret")
+    else:
+        return render_template("register.html", form=form)
+    
     
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -49,4 +56,35 @@ def login():
     
     form = LoginForm()
     
-    return redirect("/secret")
+    if form.validate_on_submit():
+        username = form.username.data 
+        password = form.password.data
+        
+        #authenticate will return a user or False
+        user = User.authenticate(username, password)
+        
+        if user:
+            session["username"] = username 
+            return redirect("/secret")
+        
+        else:
+            form.username.errors = ["Oops, something went wrong"]
+            
+            return render_template("login.html", form=form)
+        
+    
+    @app.route("/secret")
+    def secret():
+        if "username" in session:
+            return render_template("secret.html")
+
+        flash("You made it!")
+        return redirect("/")
+    
+    @app.route("/logout")
+    def logout():
+        """Logs user out and redirects to /"""
+        
+        session.pop("username")
+        
+        return redirect("/")
