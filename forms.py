@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms import validators
-from wtforms.validators import Email, InputRequired
+# from wtforms import validators
+from wtforms.validators import Email, InputRequired, Optional, Email
 
 # https: //wtforms.readthedocs.io/en/2.3.x/fields/
 

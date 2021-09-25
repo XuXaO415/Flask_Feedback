@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>
-    Flask Feedback &ndash; {% block title %}{% endblock %}
+    Flask Feedback {% block title %}{% endblock %}
   </title>
   <link rel="stylesheet"
         href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="/">Flask Feedback</a>
+  <a class="navbar-brand" href="/">Home</a>
   <ul class="navbar-nav">
     <li class="nav-item">
       {% if 'username' in session %}
-      <a class="nav-link" href="/">Logout</a>
+      <a class="nav-link" href="/logout">Logout</a>
       {% else %}
       <a class="nav-link" href="/login">Login</a>
+      <a class="nav-link" href="/secret">Secret</a>
       {% endif %}
     </li>
   </ul>

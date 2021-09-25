@@ -21,6 +21,7 @@ class User(db.Model):
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
     
+    
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
         """Register user w/hashed password and return user"""
