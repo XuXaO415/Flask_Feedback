@@ -40,8 +40,8 @@ def register():
         last_name = form.last_name.data
 
         user = User.register(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
-        db.session.add(user)
-        db.session.commit()
+        # db.session.add(user)
+        # db.session.commit()
 
         session["username"] = username
 
@@ -66,9 +66,10 @@ def login():
 
         if user:
             session["username"] = username
+            flash(f"Welcome back {username}!")
             # return render_template("secret.html")
-            return redirect("/secret")
-            # return redirect(f'/users/{username}')
+            # return redirect("/secret")
+            return redirect(f'/users/{username}')
 
         else:
             form.username.errors = ["Oops, something went wrong"]
@@ -92,5 +93,6 @@ def logout():
     # pdb.set_trace()
 
     session.pop("username")
+    flash("You have successfully logged out.")
 
     return redirect("/")
