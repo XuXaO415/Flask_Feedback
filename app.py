@@ -16,7 +16,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
-db.create_all()
+# db.create_all()
 
 
 @app.route("/")
@@ -46,7 +46,9 @@ def register():
         session["username"] = username
 
         # On successful login, redirect to secret page
-        return redirect("/secret")
+        # return redirect("/secret")
+        # change /secret to /users/{username}
+        return redirect ("/users/{username")
 
     else:
         return render_template("register.html", form=form)
@@ -77,14 +79,23 @@ def login():
     return render_template("login.html", form=form)
 
 
-@app.route("/secret")
-def secret_page():
+# @app.route("/secret")
+# def secret_page():
 
-    if "username" not in session:
-        flash("Sorry, you are in the wrong place!")
-        return redirect("/")
-    else:
-        return render_template("secret.html")
+#     if "username" not in session:
+#         flash("Sorry, you are in the wrong place!")
+#         return redirect("/")
+#     else:
+#         return render_template("secret.html")
+
+@app.route("/users/<username>")
+def user_info(username):
+    """Shows info about a user except for their password"""
+    if session["username"] == username:
+        user = User.query.get_or_404(username)
+        return render
+    
+    
 
 
 @app.route("/logout")
