@@ -55,13 +55,12 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Shows form, authenticates and logs in user"""
-
     form = LoginForm()
 
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-
+        
         # .authenticate will return a user or False
         user = User.authenticate(username, password)
 
@@ -69,11 +68,12 @@ def login():
             session["username"] = username
             # return render_template("secret.html")
             return redirect("/secret")
+            # return redirect(f'/users/{username}')
 
         else:
             form.username.errors = ["Oops, something went wrong"]
 
-            return render_template("login.html", form=form)
+    return render_template("login.html", form=form)
 
 
 @app.route("/secret")
