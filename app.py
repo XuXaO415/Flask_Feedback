@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///feedback_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = "SoMeSoRTaSeCrEt**1110010"
+app.config['SECRET_KEY'] = os.environ.get("API_KEY")
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
@@ -36,16 +36,19 @@ def register():
 
     if form.validate_on_submit():
         username = form.username.data
-        password = form.password.data
+        pwd = form.password.data
+        # password = form.password.data
         email = form.email.data
         first_name = form.first_name.data
         last_name = form.last_name.data
-
-        user = User.register(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+        
+        # pdb.set_trace()
+        user = User.register(username, pwd, email, first_name, last_name)
         db.session.add(user)
         db.session.commit()
 
-        session["username"] = username
+        if user:
+            session["username"] = username
 
         # On successful login, redirect to secret page
         # return redirect("/secret")
@@ -67,6 +70,8 @@ def login():
         
         # .authenticate will return a user or False
         user = User.authenticate(username, pwd)
+        # db.session.add(user)
+        # db.session.commit()
 
         if user:
             session["username"] = username
@@ -172,15 +177,15 @@ def update_feedback(feedback_id):
     
         
 
-@app.route("/feedback/<in:feedback_id>/delete", methods=["POST"])
-def delete_feedback(feedback_id):
-    """Delete a specific piece of feedback and redirect to /users/<username>"""
+# @app.route("/feedback/<in:feedback_id>/delete", methods=["POST"])
+# def delete_feedback(feedback_id):
+#     """Delete a specific piece of feedback and redirect to /users/<username>"""
     
-    feedback = Feedback.query.get_or_404(feedback_id)
-    if session["username"] != feedback.username:
-        db.session.delete(feedback)
-        db.session.commit()
+#     feedback = Feedback.query.get_or_404(feedback_id)
+#     if session["username"] != feedback.username:
+#         db.session.delete(feedback)
+#         db.session.commit()
         
-        return redirect("/users/{username}")
+#         return redirect("/users/{username}")
 
 
