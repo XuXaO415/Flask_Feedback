@@ -36,14 +36,14 @@ def register():
 
     if form.validate_on_submit():
         username = form.username.data
-        pwd = form.password.data
-        # password = form.password.data
+        #pwd = form.password.data
+        password = form.password.data
         email = form.email.data
         first_name = form.first_name.data
         last_name = form.last_name.data
 
         # pdb.set_trace()
-        user = User.register(username, pwd, email, first_name, last_name)
+        user = User.register(username, password, email, first_name, last_name)
         db.session.add(user)
         db.session.commit()
 
@@ -53,6 +53,7 @@ def register():
         # On successful login, redirect to secret page
         # return redirect("/secret")
         # change /secret to /users/{username}
+        flash("You successfully created an account", "success")
         return redirect(f"/users/{username}")
 
     else:
@@ -123,6 +124,7 @@ def user_info(username):
 @app.route("/users/<username>/delete", methods=["POST"])
 def delete_user(username):
     """Completely deletes a user and their feedback"""
+    
     if session["username"] != username:
         user = User.query.get_or_404(username)
         db.session.delete(user)
@@ -172,7 +174,7 @@ def update_feedback(feedback_id):
             feedback.content = form.content.data
             db.session.add(feedback)
             db.session.commit()
-            return render_template("add_feedback.html", form=form, feedback=feedback)
+            return render_template("update_feedback.html", form=form, feedback=feedback)
 
         else:
             return redirect("/login")
@@ -188,3 +190,6 @@ def update_feedback(feedback_id):
 #         db.session.commit()
 
 #         return redirect(f"/users/{feedback.username}")
+    
+#     else:
+#         return redirect("/login")

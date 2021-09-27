@@ -23,7 +23,6 @@
     <form>
     <a href="/logout" class="btn btn-secondary">Logout</a>
     <a href="/users/{{user.username}}/feedback/add" class="btn btn-primary">Add feedback</a>
-    <button formaction="/users/{{user.username}}/delete" class="btn btn-danger" formmethod="POST">Delete
-        user</button>
+    <button formaction="/users/{{user.username}}/delete" class="btn btn-danger" formmethod="POST">Delete User</button>
 </form>
 {% endblock %}
