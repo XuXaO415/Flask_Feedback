@@ -11,4 +11,19 @@
         <p>Name: {{user.first_name}} {{user.last_name}}</p>
     </ul>
 </li>
+<h2>Feedback</h2>
+{% if user.feedback %}
+{% for feedback in user.feedbacks %}
+<a href="/feedback/{{feedback.id}}/update">{{feedback.title}}</a>
+<p>{{feedback.content}}</p>
+{% endfor %}
+
+<div>
+    {% endif %}
+    <form>
+    <a href="/logout" class="btn btn-secondary">Logout</a>
+    <a href="/users/{{user.username}}/feedback/add" class="btn btn-primary">Add feedback</a>
+    <button formaction="/users/{{user.username}}/delete" class="btn btn-danger" formmethod="POST">Delete
+        user</button>
+</form>
 {% endblock %}

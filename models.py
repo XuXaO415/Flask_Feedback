@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+import pdb
 
 db = SQLAlchemy()
 
@@ -37,7 +38,8 @@ class User(db.Model):
         #using "ignore" as suggested on Stackoverflow
         #ignores base64 unicode string
         #https://stackoverflow.com/questions/44716412/sqlalchemy-exc-dataerror-psycopg2-dataerror-value-too-long-for-type-character
-        hashed_utf8 = hashed.decode("utf8", "ignore")
+        hashed_utf8 = hashed.decode("utf8")
+        # pdb.set_trace()
         
         #return all instances of a user w/username and hashed password
         return cls(username=username, password=hashed_utf8, email=email, first_name=first_name, last_name=last_name)
