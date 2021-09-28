@@ -4,25 +4,26 @@
 
 {% block content %} 
 <h1>User details</h1>
-<li>
+
+    <span class="user-list">
     <ul>
-        <p>Username: {{user.username}}</p>
-        <p>Email: {{user.email}}</p>
-        <p>Name: {{user.first_name}} {{user.last_name}}</p>
+        <p>Username: {{username}}</p>
+        <p>Email: {{email}}</p>
+        <p>Name: {{first_name}} {{last_name}}</p>
     </ul>
-</li>
+</span>
 <h2>Feedback</h2>
-{% if user.feedback %}
-{% for feedback in user.feedbacks %}
+
+{% for feedback in feedback %}
 <a href="/feedback/{{feedback.id}}/update">{{feedback.title}}</a>
 <p>{{feedback.content}}</p>
 {% endfor %}
 
 <div>
-    {% endif %}
+   
     <form>
     <a href="/logout" class="btn btn-secondary">Logout</a>
-    <a href="/users/{{user.username}}/feedback/add" class="btn btn-primary">Add feedback</a>
-    <button formaction="/users/{{user.username}}/delete" class="btn btn-danger" formmethod="POST">Delete User</button>
+    <a href="/users/{{username}}/feedback/add" class="btn btn-primary">Add feedback</a>
+    <button formaction="/users/{{username}}/delete" class="btn btn-danger" formmethod="POST">Delete User</button>
 </form>
 {% endblock %}

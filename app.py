@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, flash, redirect
 from flask.templating import render_template_string
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Feedback
-from forms import RegisterForm, LoginForm, FeedbackForm
+from forms import RegisterForm, LoginForm, FeedbackForm, DeleteForm
 import pdb
 import os
 
@@ -67,19 +67,20 @@ def login():
 
     if form.validate_on_submit():
         username = form.username.data
-        pwd = form.password.data
+        password = form.password.data
 
         # .authenticate will return a user or False
-        user = User.authenticate(username, pwd)
+        user = User.authenticate(username, password)
         # db.session.add(user)
         # db.session.commit()
 
         if user:
-            session["username"] = username
-            flash(f"Welcome back {username}!")
+            session["username"] = user.username
+            flash(f"Welcome back {user.username}!")
             # return render_template("secret.html")
             # return redirect("/secret")
-            return redirect(f"/users/{username}")
+            # return redirect(f"/users/{username}")
+            return render_template("user_info.html", form=form)
 
         else:
             form.username.errors = ["Oops. Invalid username/password"]
@@ -114,8 +115,8 @@ def user_info(username):
     """Shows info about a user except for their password"""
 
     if session["username"] != username:
-        
-        user = User.query.get_or_404(username)
+
+        user = User.query.get(username)
         return render_template("user_info.html", user=user)
     else:
         return redirect("/login")
@@ -124,9 +125,9 @@ def user_info(username):
 @app.route("/users/<username>/delete", methods=["POST"])
 def delete_user(username):
     """Completely deletes a user and their feedback"""
-    
+
     if session["username"] != username:
-        user = User.query.get_or_404(username)
+        user = User.query.get(username)
         db.session.delete(user)
         db.session.commit()
         session.pop("username")
@@ -144,7 +145,7 @@ def add_feedback(username):
         return redirect("/login")
 
     form = FeedbackForm()
-    if not form.validate_on_submit():
+    if  form.validate_on_submit():
         return render_template("add_feedback.html", form=form)
 
     title = form.title.data
@@ -190,6 +191,19 @@ def update_feedback(feedback_id):
 #         db.session.commit()
 
 #         return redirect(f"/users/{feedback.username}")
-    
+
 #     else:
 #         return redirect("/login")
+
+@app.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
+def delete_feedback(feedback_id):
+    """Delete feedback"""
+
+    feedback = Feedback.query.get_or_404(feedback_id)
+    if session["username"] != feedback.username:
+
+        form = DeleteForm()
+        db.session.delete(feedback)
+        db.session.commit()
+
+        return redirect(f"/users/{feedback.username}")
