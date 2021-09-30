@@ -25,9 +25,8 @@ class User(db.Model):
     feedbacks = db.relationship("Feedback", backref="user", cascade="all, delete-orphan")
     
     
-    # def __repr__(self):
-    #     u = self
-    #     return f"<User username={u.username} password={u.password} email={u.email} first_name={u.first_name} last_name={u.last_name}>"
+    def __repr__(self):
+        return f"<User username={self.username} password={self.password} email={self.email} first_name={self.first_name} last_name={self.last_name}>"
     
     @classmethod
     def register(cls, username, pwd, email, first_name, last_name):
@@ -41,8 +40,11 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
         # pdb.set_trace()
         
+        # db.session.add(cls)
         #return all instances of a user w/username and hashed password
         return cls(username=username, password=hashed_utf8, email=email, first_name=first_name, last_name=last_name)
+
+
 
     @classmethod 
     def authenticate(cls, username, pwd):

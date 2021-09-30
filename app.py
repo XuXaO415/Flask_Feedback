@@ -1,5 +1,8 @@
 from flask import Flask, render_template, session, flash, redirect
+# import flask
+# from flask_login import LoginManager
 from flask.templating import render_template_string
+from flask import url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Feedback
 from forms import RegisterForm, LoginForm, FeedbackForm, DeleteForm
@@ -12,7 +15,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///feedback_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = os.environ.get("API_KEY")
+# app.config['SECRET_KEY'] = os.environ.get("API_KEY")
+app.config['SECRET_KEY'] = ("API_KEY")
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
@@ -75,17 +79,33 @@ def login():
         # db.session.commit()
 
         if user:
-            session["username"] = user.username
+            session["username"] = username
             flash(f"Welcome back {user.username}!")
             # return render_template("secret.html")
             # return redirect("/secret")
-            # return redirect(f"/users/{username}")
-            return render_template("user_info.html", form=form)
+            return redirect("/users/{username}")
+            # return render_template("user_info.html", form=form)
 
         else:
             form.username.errors = ["Oops. Invalid username/password"]
 
     return render_template("login.html", form=form)
+    
+    # form = LoginForm()
+    # if form.validate_on_submit():
+    #     username = form.username.data 
+    #     password = form.password.data 
+        
+    #     user = User.authenticate(username, password)
+    #     flask.flash("Logged in successfully.")
+        
+    #     next = flask.request.args.get("next")
+        
+    #     # if not is_safe_url(next):
+    #     #     return flask.abort(400)
+        
+    #     return flask.redirect(next or flask.url_for("user_info"))
+    # return flask.render_template("user_info.html", form=form)
 
 
 # @app.route("/secret")
@@ -127,7 +147,7 @@ def delete_user(username):
     """Completely deletes a user and their feedback"""
 
     if session["username"] != username:
-        user = User.query.get(username)
+        user = User.query.get_or_404(username)
         db.session.delete(user)
         db.session.commit()
         session.pop("username")

@@ -26,3 +26,6 @@ class FeedbackForm(FlaskForm):
     """Feedback form"""
     title = StringField("Title", validators=[InputRequired()])
     content = TextAreaField("Content", validators=[InputRequired()])
+    
+class DeleteForm(FlaskForm):
+    """Left blank"""
