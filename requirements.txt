@@ -29,5 +29,5 @@ six==1.16.0
 SQLAlchemy==1.4.23
 toml==0.10.2
 urllib3==1.26.19
-Werkzeug==3.0.3
+Werkzeug==3.0.6
 WTForms==2.3.3
